@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-@SpringBootTest //Start Spring Application context    No components are made so injection is not possible
+@SpringBootTest // Start Spring Application context No components are made so injection is not
+                // possible
 public class UserServicesTest {
 
     @Autowired
@@ -25,13 +25,14 @@ public class UserServicesTest {
     @Disabled
     @ParameterizedTest
     @CsvSource({
-        "1,1,2",
+            "1,1,2",
             "2,1,3",
             "3,3,6"
     })
-    public void set(int a,int b, int expected) {
-        assertEquals(expected,a+b);
+    public void set(int a, int b, int expected) {
+        assertEquals(expected, a + b);
     }
+
     @Disabled
     @ParameterizedTest
     @ArgumentsSource(ArgumentSourceProvider.class)

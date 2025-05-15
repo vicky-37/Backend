@@ -28,19 +28,20 @@ public class UserScheduler {
     @Autowired
     private EmailService emailService;
 
-
     @Autowired
     private APICache apiCache;
 
     @Autowired
     private KafkaTemplate<String, SentimentData> kafkaTemplate;
 
-    //@Scheduled(cron = "0 9 * * * SUN")
-    public void fetchAndSendMail(){
+    @Scheduled(cron = "0 9 * * * SUN")
+    public void fetchAndSendMail() {
         List<User> users = userRepoCriteria.getSentiAnalys();
         for (User user : users) {
             List<JournalEntry> journalEntries = user.getJournalEntries();
-            List<Sentiment> sentiments = journalEntries.stream().filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS))).map(x -> x.getSentiment()).collect(Collectors.toList());
+            List<Sentiment> sentiments = journalEntries.stream()
+                    .filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS)))
+                    .map(x -> x.getSentiment()).collect(Collectors.toList());
             Map<Sentiment, Integer> sentimentCounts = new HashMap<>();
             for (Sentiment sentiment : sentiments) {
                 if (sentiment != null) {
@@ -56,17 +57,20 @@ public class UserScheduler {
                 }
             }
             if (mostFrequentSentiment != null) {
-                SentimentData sentimentData = SentimentData.builder().email(user.getEmail()).sentiment("sentiment for 7 days" + mostFrequentSentiment).build();
-                try{
-                    kafkaTemplate.send("Weekly_Sentiments",sentimentData.getEmail(),sentimentData);
+                SentimentData sentimentData = SentimentData.builder().email(user.getEmail())
+                        .sentiment("sentiment for 7 days" + mostFrequentSentiment).build();
+                try {
+                    kafkaTemplate.send("Weekly_Sentiments", sentimentData.getEmail(), sentimentData);
                 } catch (Exception e) {
-                    emailService.sendEmail(sentimentData.getEmail(),"Sentiments for this week",sentimentData.getSentiment());
+                    emailService.sendEmail(sentimentData.getEmail(), "Sentiments for this week",
+                            sentimentData.getSentiment());
                 }
 
             }
         }
 
     }
+
     @Scheduled(cron = "0 0/10 * ? * *")
     public void clearAppCache() {
         apiCache.init();

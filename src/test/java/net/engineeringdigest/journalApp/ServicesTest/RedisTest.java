@@ -11,11 +11,11 @@ public class RedisTest {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
     @Disabled
     @Test
-    public void test(){
-        Object email = redisTemplate.opsForValue().get("salary");
-        int a = 1;
-
+    public void testSendMail() {
+        redisTemplate.opsForValue().set("email", "gmail@email.com");
+        Object salary = redisTemplate.opsForValue().get("salary");
     }
 }

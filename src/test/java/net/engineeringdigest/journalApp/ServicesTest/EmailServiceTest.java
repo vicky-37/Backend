@@ -11,9 +11,12 @@ public class EmailServiceTest {
 
     @Autowired
     private EmailService emailService;
+
     @Disabled
     @Test
-    public void sendMail(){
-    emailService.sendEmail("vikash4444rawat@gmail.com","Greetings","Hola!! amigo");
-}
+    public void testSendMail() {
+        emailService.sendEmail("duchess348@slmail.me",
+                "Testing Java mail sender",
+                "Hi, aap kaise hain ?");
+    }
 }

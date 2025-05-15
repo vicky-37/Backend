@@ -1,6 +1,6 @@
 package net.engineeringdigest.journalApp.Config;
 
-
+import io.jsonwebtoken.Jwt;
 import net.engineeringdigest.journalApp.Filters.JwtFilter;
 import net.engineeringdigest.journalApp.Services.UserDetailsServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
+import javax.swing.text.html.HTML;
 
-@Configuration      // so we can define bean in it
+@Configuration // so we can define bean in it
 @EnableWebSecurity
 public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
@@ -31,7 +32,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/journal/**","/user/**").authenticated()
+                .antMatchers("/journal/**", "/user/**").authenticated()
                 .antMatchers("/admin/**").hasRole("Admin")
                 .anyRequest().permitAll();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable();
@@ -45,13 +46,13 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 }

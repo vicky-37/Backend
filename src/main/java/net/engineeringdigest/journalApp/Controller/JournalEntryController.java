@@ -1,5 +1,7 @@
 package net.engineeringdigest.journalApp.Controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineeringdigest.journalApp.Entity.JournalEntry;
 import net.engineeringdigest.journalApp.Entity.User;
 import net.engineeringdigest.journalApp.Services.JournalEntryServices;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "CRUD OPERATIONS on Journal Entries")
 public class JournalEntryController {
 
     @Autowired
@@ -25,68 +28,82 @@ public class JournalEntryController {
     private UserServices userServices;
 
     @GetMapping
-    public ResponseEntity<?> getAllUserEntries(){// method
+    @Operation(summary = "get all journal entries of a user")
+    public ResponseEntity<?> getAllUserEntries() {// method
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User user = userServices.findByUsername(userName);
         List<JournalEntry> all = user.getJournalEntries();
-        if( all != null &&!all.isEmpty()){
-            return new ResponseEntity<>(all,HttpStatus.OK);
+        if (all != null && !all.isEmpty()) {
+            return new ResponseEntity<>(all, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        // returned journal entries values converted into arraylist
+
     }
+
     @PostMapping
-    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry){
+    @Operation(summary = "create new entries of a user")
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
             journalEntryServices.save(myEntry, userName);
-            return new ResponseEntity<>(myEntry,HttpStatus.CREATED);
+            return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
     @GetMapping("id/{myId}")
-    public ResponseEntity<?> getJournalEntryById(@PathVariable ObjectId myId) {
+    @Operation(summary = "get a specific general entry by it's id")
+    public ResponseEntity<?> getJournalEntryById(@PathVariable String myId) {
+        ObjectId objectId = new ObjectId(myId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User user = userServices.findByUsername(userName);
-        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(myId)).collect(Collectors.toList());
-        if(!collect.isEmpty()) {
-            Optional<JournalEntry> journalEntry = journalEntryServices.findById(myId);
+        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(objectId))
+                .collect(Collectors.toList());
+        if (!collect.isEmpty()) {
+            Optional<JournalEntry> journalEntry = journalEntryServices.findById(objectId);
             if (journalEntry.isPresent()) {
                 return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     @DeleteMapping("id/{myId}")
-    public ResponseEntity<?> deleteEntry(@PathVariable ObjectId myId){
+    @Operation(summary = "delete a journal entry using it's id")
+    public ResponseEntity<?> deleteEntry(@PathVariable ObjectId myId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         boolean response = journalEntryServices.deleteById(myId, userName);
-        if(response) {
+        if (response) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        else{
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping("/id/{jId}")
-    public ResponseEntity<?> updateJournalEntry(@PathVariable ObjectId jId, @RequestBody JournalEntry newEntry){
+    @Operation(summary = "update a journal using it's id")
+    public ResponseEntity<?> updateJournalEntry(@PathVariable ObjectId jId, @RequestBody JournalEntry newEntry) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User user = userServices.findByUsername(userName);
-        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(jId)).collect(Collectors.toList());
-        if(!collect.isEmpty()){
+        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(jId))
+                .collect(Collectors.toList());
+        if (!collect.isEmpty()) {
             Optional<JournalEntry> journalEntry = journalEntryServices.findById(jId);
-            if(journalEntry.isPresent()){
+            if (journalEntry.isPresent()) {
                 JournalEntry newid = journalEntry.get();
-                newid.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle(): newid.getTitle());
-                newid.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent():newid.getContent());
-                journalEntryServices.save(newid );
-                return new ResponseEntity<>(newid,HttpStatus.OK);
+                newid.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle()
+                        : newid.getTitle());
+                newid.setContent(
+                        newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent()
+                                : newid.getContent());
+                journalEntryServices.save(newid);
+                return new ResponseEntity<>(newid, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

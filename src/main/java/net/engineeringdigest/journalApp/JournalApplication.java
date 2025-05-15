@@ -1,6 +1,5 @@
 package net.engineeringdigest.journalApp;
 
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -21,17 +20,20 @@ import java.sql.SQLOutput;
 public class JournalApplication {
 
     public static void main(String[] args) {
+        SpringApplication.run(JournalApplication.class, args);
         ConfigurableApplicationContext context = SpringApplication.run(JournalApplication.class, args);
         ConfigurableEnvironment environment = context.getEnvironment();
         System.out.println(environment.getActiveProfiles()[0]);
 
     }
+
     @Bean
-    public PlatformTransactionManager anyName(MongoDatabaseFactory dbFactory){
+    public PlatformTransactionManager anyName(MongoDatabaseFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
+
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 }

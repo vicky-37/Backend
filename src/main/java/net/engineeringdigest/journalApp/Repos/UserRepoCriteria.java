@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @Repository
 public class UserRepoCriteria {
 
@@ -16,7 +17,7 @@ public class UserRepoCriteria {
 
     public List<User> getSentiAnalys() {
         Query query = new Query();
-        query.addCriteria(Criteria.where("email").regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$"));
+        query.addCriteria(Criteria.where("email").regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z|A-Z]{2,6}$"));
         query.addCriteria(Criteria.where("SentimentAnalysis").is(true));
         return mongoTemplate.find(query, User.class);
 

@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.Controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineeringdigest.journalApp.Entity.User;
 import net.engineeringdigest.journalApp.Repos.UserRepo;
 import net.engineeringdigest.journalApp.Services.UserServices;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "User API",description = "Read,Update,Delete OPERATIONS")   //tag acts as a controller group
 public class UserController {
 
     @Autowired
