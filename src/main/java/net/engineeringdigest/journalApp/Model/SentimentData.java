@@ -1,4 +1,4 @@
-package net.engineeringdigest.journalApp.model;
+package net.engineeringdigest.journalApp.Model;
 
 
 import lombok.AllArgsConstructor;

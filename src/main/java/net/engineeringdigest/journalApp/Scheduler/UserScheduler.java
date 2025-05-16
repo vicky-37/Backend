@@ -6,7 +6,7 @@ import net.engineeringdigest.journalApp.Entity.User;
 import net.engineeringdigest.journalApp.Enums.Sentiment;
 import net.engineeringdigest.journalApp.Repos.UserRepoCriteria;
 import net.engineeringdigest.journalApp.Services.EmailService;
-import net.engineeringdigest.journalApp.model.SentimentData;
+import net.engineeringdigest.journalApp.Model.SentimentData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;

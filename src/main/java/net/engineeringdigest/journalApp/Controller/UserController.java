@@ -42,7 +42,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @DeleteMapping
-    public ResponseEntity<?> deleteEntry(@PathVariable ObjectId myId){
+    public ResponseEntity<?> deleteEntry(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepo.deleteByUsername(authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

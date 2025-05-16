@@ -57,6 +57,8 @@ public class UserServices {
 
     public void saveAdmin(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEmail(user.getUsername() + "@gmail.com");
+        user.setSentimentAnalysis(user.getSentimentAnalysis());
         user.setRoles(Arrays.asList("User", "Admin"));
         userRepo.save(user);
     }

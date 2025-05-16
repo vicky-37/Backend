@@ -62,18 +62,7 @@ public class OAuthController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-            ResponseEntity<Map> tokenResponse = null;
-            try {
-                tokenResponse = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
-                log.info("Token exchange successful");
-                // ... rest of the success flow
-            } catch (HttpClientErrorException e) {
-                log.error("Token exchange failed  Status: {}", e.getStatusCode());
-                log.error("Error response body: {}", e.getResponseBodyAsString());
-                log.error("Request headers: {}", headers);
-                throw e;
-            }
-
+            ResponseEntity<Map> tokenResponse =restTemplate.postForEntity(tokenEndpoint, request, Map.class);
             String idToken = (String) tokenResponse.getBody().get("id_token");
             String userInfoUrl = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
             ResponseEntity<Map> userInfoResponse = restTemplate.getForEntity(userInfoUrl, Map.class);
