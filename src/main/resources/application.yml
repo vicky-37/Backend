@@ -48,7 +48,7 @@ spring:
         spring.json.trusted.packages: net.engineeringdigest.journalApp.Model
 
 server:
-  port: ${SERVER_PORT}
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /journal
 
@@ -56,7 +56,7 @@ server:
 weather:
   api:
     key: ${WEATHER_API_KEY}
-    
+
 springdoc:
   swagger-ui.path: /docs
 
