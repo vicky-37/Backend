@@ -15,25 +15,25 @@ public class RedisService {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public <T> T get(String key, Class<T> entityClass){
+    public <T> T get(String key, Class<T> entityClass) {
         try {
-        Object o = redisTemplate.opsForValue().get(key);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(o.toString(),entityClass);
-        }catch (Exception e){
-            log.error("Error occured :",e);
+            Object o = redisTemplate.opsForValue().get(key);
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(o.toString(), entityClass);
+        } catch (Exception e) {
+            log.error("Error occured :", e);
             return null;
         }
     }
-    public void set(String key, Object o,Long ttl){
+
+    public void set(String key, Object o, Long ttl) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             String Json = mapper.writeValueAsString(o);
-            redisTemplate.opsForValue().set(key,Json ,ttl, TimeUnit.SECONDS);
-        }catch (Exception e){
-            log.error("Error occured :",e);
+            redisTemplate.opsForValue().set(key, Json, ttl, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("Error occured :", e);
         }
     }
-
 
 }

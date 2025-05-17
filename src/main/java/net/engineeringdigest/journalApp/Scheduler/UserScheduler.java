@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class UserScheduler {
 
     @Autowired
-    private UserRepoCriteria userRepoCriteria;
+    private UserRepoCriteria userRepo;
 
     @Autowired
     private EmailService emailService;
@@ -36,12 +36,10 @@ public class UserScheduler {
 
     @Scheduled(cron = "0 9 * * * SUN")
     public void fetchAndSendMail() {
-        List<User> users = userRepoCriteria.getSentiAnalys();
+        List<User> users = userRepo.getSentiAnalys();
         for (User user : users) {
             List<JournalEntry> journalEntries = user.getJournalEntries();
-            List<Sentiment> sentiments = journalEntries.stream()
-                    .filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS)))
-                    .map(x -> x.getSentiment()).collect(Collectors.toList());
+            List<Sentiment> sentiments = journalEntries.stream().filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS))).map(x -> x.getSentiment()).collect(Collectors.toList());
             Map<Sentiment, Integer> sentimentCounts = new HashMap<>();
             for (Sentiment sentiment : sentiments) {
                 if (sentiment != null) {
@@ -57,8 +55,7 @@ public class UserScheduler {
                 }
             }
             if (mostFrequentSentiment != null) {
-                SentimentData sentimentData = SentimentData.builder().email(user.getEmail())
-                        .sentiment("sentiment for 7 days" + mostFrequentSentiment).build();
+                SentimentData sentimentData = SentimentData.builder().email(user.getEmail()).sentiment("sentiment for 7 days" + mostFrequentSentiment).build();
                 try {
                     kafkaTemplate.send("Weekly_Sentiments", sentimentData.getEmail(), sentimentData);
                 } catch (Exception e) {

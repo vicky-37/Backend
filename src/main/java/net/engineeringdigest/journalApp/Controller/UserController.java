@@ -16,10 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/user")
-@Tag(name = "User API",description = "Read,Update,Delete OPERATIONS")   //tag acts as a controller group
+@Tag(name = "User API", description = "Read,Update,Delete OPERATIONS") // tag acts as a controller group
 public class UserController {
 
     @Autowired
@@ -32,33 +31,32 @@ public class UserController {
     private WeatherService weatherService;
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user){
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User dbuser = userServices.findByUsername(userName);
-            dbuser.setUsername(user.getUsername());
-            dbuser.setPassword(user.getPassword());
-            userServices.finalSave(dbuser);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        dbuser.setUsername(user.getUsername());
+        dbuser.setPassword(user.getPassword());
+        userServices.finalSave(dbuser);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @DeleteMapping
-    public ResponseEntity<?> deleteEntry(){
+    public ResponseEntity<?> deleteEntry() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepo.deleteByUsername(authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @GetMapping
     public ResponseEntity<?> greetings() {// method
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         WeatherResponse weatherResponse = weatherService.getWeather("mumbai");
         String greetings = "";
         if (weatherResponse != null) {
-        greetings = "Weather feels like: " + weatherResponse.getCurrent().getFeelslikeC();
+            greetings = "Weather feels like: " + weatherResponse.getCurrent().getFeelslikeC();
         }
-            return new ResponseEntity<>("HIIII!!!!" + authentication.getName() + greetings, HttpStatus.OK);
+        return new ResponseEntity<>("HIIII!!!!" + authentication.getName() + greetings, HttpStatus.OK);
     }
-
-
-
 
 }
